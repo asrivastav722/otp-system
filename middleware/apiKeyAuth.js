@@ -4,6 +4,7 @@ export default function apiKeyAuth(req, res, next) {
 
   // DEBUG LOGS (Check these in Railway's "Logs" tab)
   console.log("--- Auth Check ---");
+  console.log("--- Auth Check ---");
   console.log("Header Key:", apiKey);
   console.log("Expected Key (First 4 chars):", MASTER_KEY ? MASTER_KEY.substring(0, 4) : "UNDEFINED");
 
