@@ -4,7 +4,7 @@ import apiKeyAuth from "./middleware/apiKeyAuth.js";
 
 const app = express();
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 app.use(express.json());
 
@@ -17,9 +17,7 @@ app.post("/api/sms/send", apiKeyAuth, (req, res) => {
   const { to, message } = req.body;
 
   if (!to || !message) {
-    return res.status(400).json({
-      error: "Missing fields"
-    });
+    return res.status(400).json({ error: "Missing fields" });
   }
 
   addJob({
