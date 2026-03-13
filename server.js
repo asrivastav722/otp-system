@@ -4,43 +4,38 @@ import apiKeyAuth from "./middleware/apiKeyAuth.js";
 
 const app = express();
 
-// Render provides PORT automatically
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("SMS API Running");
+  res.send("SMS Platform Running");
 });
 
-app.post("/api/sms/send", apiKeyAuth, async (req, res) => {
-  try {
-    const { to, message } = req.body;
+app.post("/api/sms/send", apiKeyAuth, (req, res) => {
 
-    if (!to || !message) {
-      return res.status(400).json({ error: "Missing fields" });
-    }
+  const { to, message } = req.body;
 
-    await addJob({
-      to,
-      message,
-      createdAt: Date.now()
-    });
-
-    res.json({
-      success: true,
-      status: "queued",
-      queueSize: queueSize()
-    });
-
-  } catch (err) {
-    res.status(500).json({
-      error: "Server error",
-      message: err.message
+  if (!to || !message) {
+    return res.status(400).json({
+      error: "Missing fields"
     });
   }
+
+  addJob({
+    to,
+    message,
+    createdAt: Date.now()
+  });
+
+  res.json({
+    success: true,
+    status: "queued",
+    queueSize: queueSize()
+  });
+
 });
 
 app.listen(PORT, () => {
-  console.log(`SMS API running on port ${PORT}`);
+  console.log("SMS API running on port", PORT);
 });

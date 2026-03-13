@@ -1,12 +1,10 @@
-const API_KEYS = ["sk_test_123"];
-
 export default function apiKeyAuth(req, res, next) {
 
-  const key = req.headers.authorization;
+  const apiKey = req.headers["x-api-key"];
 
-  if (!API_KEYS.includes(key)) {
+  if (!apiKey || apiKey !== process.env.API_KEY) {
     return res.status(401).json({
-      error: "Invalid API key"
+      error: "Unauthorized"
     });
   }
 
