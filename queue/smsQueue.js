@@ -1,6 +1,13 @@
-import { Queue } from "bullmq";
-import connection from "../config/redis.js";
+const queue = [];
 
-const smsQueue = new Queue("smsQueue", { connection });
+export function addJob(job) {
+  queue.push(job);
+}
 
-export default smsQueue;
+export function getJob() {
+  return queue.shift();
+}
+
+export function queueSize() {
+  return queue.length;
+}

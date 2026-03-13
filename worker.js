@@ -1,38 +1,40 @@
-import { Worker } from "bullmq";
 import axios from "axios";
-import connection from "./config/redis.js";
+import { getJob } from "./queue/smsQueue.js";
 import gateways from "./data/gateways.js";
 
 function getGateway() {
   return gateways[Math.floor(Math.random() * gateways.length)];
 }
 
-new Worker(
-  "smsQueue",
-  async job => {
+async function processQueue() {
 
-    const { to, message, messageId } = job.data;
+  const job = getJob();
 
-    const gateway = getGateway();
+  if (!job) {
+    return;
+  }
 
-    try {
+  const gateway = getGateway();
 
-      await axios.get(`${gateway.url}/send`, {
-        params: {
-          phone: to,
-          message
-        }
-      });
+  try {
 
-      console.log(`SMS sent ${messageId} via ${gateway.name}`);
+    await axios.get(`${gateway.url}/send`, {
+      params: {
+        phone: job.to,
+        message: job.message
+      }
+    });
 
-    } catch (err) {
+    console.log("SMS sent to", job.to);
 
-      console.log("SMS failed", err.message);
+  } catch (err) {
 
-      throw err;
-    }
+    console.log("SMS failed:", err.message);
 
-  },
-  { connection }
-);
+  }
+
+}
+
+setInterval(processQueue, 2000);
+
+console.log("Worker started");
