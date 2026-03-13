@@ -1,7 +1,7 @@
 const gateways = [
   {
-    name: "Phone-1",
-    url: "http://192.168.1.10:8080"
+    name: "Primary-Android",
+    url: process.env.GATEWAY_URL || "http://your-home-ip:8080"
   }
 ];
 
